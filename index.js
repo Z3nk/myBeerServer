@@ -42,7 +42,7 @@ app.get('/:collection', function(req, res) {
                   res.send(200, objs);
               }
          }
-   	});
+   	},req.param("lat"),req.param("lng"));
 });
  
 app.get('/:collection/:entity', function(req, res) {

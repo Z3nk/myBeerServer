@@ -11,14 +11,27 @@ CollectionDriver.prototype.getCollection = function(collectionName, callback) {
   });
 };
 
-CollectionDriver.prototype.findAll = function(collectionName, callback) {
-    this.getCollection(collectionName, function(error, the_collection) { 
+CollectionDriver.prototype.findAll = function(collectionName, callback, lat, lng) {
+    this.getCollection(collectionName, function(error, the_collection) {
       if( error ) callback(error);
       else {
+        if(lat == undefined || lng == undefined){
         the_collection.find().toArray(function(error, results) {
           if( error ) callback(error);
           else callback(null, results);
         });
+        }
+        else{
+            the_collection.find( { pos :
+                                    { $geoWithin :
+                                      { $centerSphere:
+                                        [ [ +lng, +lat ] , 15 / 6378.137 ] }
+                                    } } ).toArray(function(error, results) {
+                                        //console.log("pos:"+results[i].pos);
+                                      if( error ) callback(error);
+                                      else callback(null, results);
+                                    });
+        }        
       }
     });
 };
